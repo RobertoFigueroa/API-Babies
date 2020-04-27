@@ -3,9 +3,43 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets
 
+from guardian.shortcuts import assign_perm
+from permissions.services import APIPermissionClassFactory
 from baby.models import Baby
 from baby.serializers import BabySerializer
 
 class BabyViewSet(viewsets.ModelViewSet):
   queryset =  Baby.objects.all()
   serializer_class = BabySerializer
+  permission_classes = (
+        APIPermissionClassFactory(
+            name='BabyPermissions',
+            permission_configuration={
+                'base': {
+                    'create': True,
+                    'list': True,
+                    
+                },
+                'instance': {
+                    'retrieve': 'baby.view_baby',
+                    'destroy': False,
+                    'update': True,
+                    'partial_update': 'baby.change_baby',
+                    # 'update_permissions': 'users.add_permissions'
+                    # 'archive_all_students': phase_user_belongs_to_school,
+                    # 'add_clients': True,
+                }
+            }
+        ),
+    )
+
+  def perform_create(self, serializer):
+    baby = serializer.save()
+    user = self.request.user
+    assign_perm('baby.change_baby', user, baby)
+    assign_perm('baby.view_baby', user, baby)
+    return Response(serializer.data)
+
+
+
+    
