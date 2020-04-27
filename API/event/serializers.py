@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from baby.models import Baby
-from type.models import Type
+from baby.serializers import BabySerializer
 from event.models import Event
 
 class EventSerializer(serializers.ModelSerializer):
@@ -13,5 +12,4 @@ class EventSerializer(serializers.ModelSerializer):
       'date',
       'event_type',
       'baby',
-      'type'
     )

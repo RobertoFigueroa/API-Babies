@@ -15,7 +15,28 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url, include
+from rest_framework import routers
+
+from baby.views import BabyViewSet
+from event.views import EventViewSet
+from type.views import TypeViewSet
+from parent.views import ParentViewSet 
+from rest_framework_jwt.views import obtain_jwt_token
+
+router = routers.DefaultRouter()
+
+router.register(r'baby', BabyViewSet)
+router.register(r'event', EventViewSet)
+router.register(r'type', TypeViewSet)
+router.register(r'parent', ParentViewSet)
+
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    url(r'^admin/', admin.site.urls),
+    url(r'^api-auth/', include('rest_framework.urls')),
+    url(r'^api/v1/', include(router.urls)),
+    url(r'^api/v1/token-auth/', obtain_jwt_token),
+    
 ]
