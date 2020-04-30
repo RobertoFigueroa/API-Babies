@@ -12,6 +12,7 @@ from guardian.shortcuts import assign_perm
 
 
 
+
 class EventViewSet(viewsets.ModelViewSet):
   queryset =  Event.objects.all()
   serializer_class = EventSerializer
@@ -21,7 +22,7 @@ class EventViewSet(viewsets.ModelViewSet):
             permission_configuration={
                 'base': {
                     'create': True,
-                    'list': True,
+                    'list': False,
                     
                 },
                 'instance': {
@@ -43,3 +44,6 @@ class EventViewSet(viewsets.ModelViewSet):
     assign_perm('event.view_event', user, event)
     assign_perm('event.delete_event', user, event)
     return Response(serializer.data)
+
+
+    
